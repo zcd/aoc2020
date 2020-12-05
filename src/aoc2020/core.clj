@@ -283,3 +283,47 @@
                                           (is-numeric? pid)))
                                })))
      (count)))
+
+(defn- bsearch [lb ub directions]
+  (let [distance (inc (- ub lb))
+        direction (first directions)]
+    (cond (= distance 0) lb
+          (empty? directions) lb
+          (= direction :down) (bsearch lb (- ub (/ distance 2))
+                                       (rest directions))
+          (= direction :up) (bsearch (+ lb (/ distance 2)) ub
+                                     (rest directions)))))
+
+(defn- seat-id [raw-directions]
+  (letfn [(row [directions]
+            (bsearch 0 127
+                     (map (fn [c]
+                            (case c
+                              \B :up
+                              \F :down))
+                          directions)))
+          (col [directions]
+            (bsearch 0 7
+                     (map (fn [c]
+                            (case c
+                              \R :up
+                              \L :down))
+                          directions)))]
+    (let [row-dirs (subs raw-directions 0 7)
+          col-dirs (subs raw-directions 7)]
+      (+ (col col-dirs)
+         (* 8 (row row-dirs))))))
+
+(defn solution-5a [input]
+  (->> (lines input)
+     (map seat-id)
+     (reduce max)))
+
+(defn solution-5b [input]
+  (let [ids (->> (lines input)
+               (map seat-id)
+               (sort))
+        [[prev __]] (filter (fn [[a b]]
+                              (= (- b a) 2))
+                            (map vector ids (rest ids)))]
+    (inc prev)))

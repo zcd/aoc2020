@@ -39,3 +39,10 @@
            (aoc2020.core/solution-4b (aoc2020.core/resource "sample-04-valid"))))
     (is (= 0
            (aoc2020.core/solution-4b (aoc2020.core/resource "sample-04-invalid"))))))
+
+;; https://adventofcode.com/2020/day/5
+(def sample-05 (aoc2020.core/resource "sample-05"))
+(deftest day5-test
+  (testing "day 5"
+    (is (= 820
+           (aoc2020.core/solution-5a sample-05)))))
